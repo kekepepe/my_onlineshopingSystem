@@ -57,14 +57,24 @@ public class MainFrame extends JFrame {
 
     public void onLoginSuccess() {
         // Initialize other panels after login to ensure data is fresh
-        ProductListPanel productPanel = new ProductListPanel(this);
-        mainPanel.add(productPanel, "PRODUCTS");
 
-        headerPanel.updateUser(authService.getCurrentUser().getUsername());
-        headerPanel.updateCartCount(cart.getItems().size());
-        headerPanel.setVisible(true);
+        if ("ADMIN".equalsIgnoreCase(authService.getCurrentUser().getRole())) {
+            AdminDashboard adminDashboard = new AdminDashboard(this);
+            mainPanel.add(adminDashboard, "ADMIN_DASHBOARD");
+            showCard("ADMIN_DASHBOARD");
+        } else {
+            ProductListPanel productPanel = new ProductListPanel(this);
+            mainPanel.add(productPanel, "PRODUCTS");
 
-        showCard("PRODUCTS");
+            // Set User ID in Cart
+            cart.setUserId(authService.getCurrentUser().getUserId());
+
+            headerPanel.updateUser(authService.getCurrentUser().getUsername());
+            headerPanel.updateCartCount(cart.getItems().size());
+            headerPanel.setVisible(true);
+
+            showCard("PRODUCTS");
+        }
     }
 
     public void logout() {
@@ -88,6 +98,10 @@ public class MainFrame extends JFrame {
         headerPanel.updateCartCount(cart.getItems().size());
     }
 
+    public void openMyAccount() {
+        new MyAccountDialog(this).setVisible(true);
+    }
+
     public void performSearch(String keyword) {
         // Find ProductListPanel
         for (Component comp : mainPanel.getComponents()) {
@@ -104,7 +118,6 @@ public class MainFrame extends JFrame {
     private class HeaderPanel extends JPanel {
         private JLabel welcomeLabel;
         private JButton cartButton;
-        private JButton logoutButton;
         private JTextField searchField;
 
         public HeaderPanel() {
@@ -122,11 +135,7 @@ public class MainFrame extends JFrame {
             JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             searchPanel.setOpaque(false);
             searchField = new JTextField(20);
-            searchField.setPreferredSize(new Dimension(300, 35)); // Taller search bar
-            searchField.setToolTipText("Search products...");
-
             JButton searchButton = new JButton("Search");
-            UIUtils.styleButton(searchButton, Color.DARK_GRAY);
 
             searchPanel.add(searchField);
             searchPanel.add(searchButton);
@@ -141,17 +150,17 @@ public class MainFrame extends JFrame {
             welcomeLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
             cartButton = new JButton("View Cart (0)");
-            UIUtils.styleButton(cartButton, new Color(255, 165, 0)); // Orange
-            cartButton.setForeground(Color.WHITE); // Ensure white text
+            cartButton.setBackground(new Color(255, 165, 0)); // Orange
+            cartButton.setForeground(Color.BLACK);
+            cartButton.setFocusPainted(false);
             cartButton.addActionListener(e -> showCart());
 
-            logoutButton = new JButton("Logout");
-            UIUtils.styleButton(logoutButton, new Color(220, 20, 60)); // Crimson Red
-            logoutButton.addActionListener(e -> logout());
+            JButton myAccountButton = new JButton("My Account");
+            myAccountButton.addActionListener(e -> MainFrame.this.openMyAccount());
 
             rightPanel.add(welcomeLabel);
             rightPanel.add(cartButton);
-            rightPanel.add(logoutButton);
+            rightPanel.add(myAccountButton);
 
             add(rightPanel, BorderLayout.EAST);
 

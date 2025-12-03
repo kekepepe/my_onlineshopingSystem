@@ -18,7 +18,6 @@ public class RegisterDialog extends JDialog {
         setSize(350, 250);
         setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
-        getContentPane().setBackground(UIUtils.COLOR_BACKGROUND);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -27,47 +26,34 @@ public class RegisterDialog extends JDialog {
         // Username
         gbc.gridx = 0;
         gbc.gridy = 0;
-        JLabel userLabel = new JLabel("Username:");
-        UIUtils.styleLabel(userLabel, 14, false);
-        add(userLabel, gbc);
+        add(new JLabel("Username:"), gbc);
 
         userField = new JTextField(15);
-        UIUtils.styleTextField(userField);
         gbc.gridx = 1;
         add(userField, gbc);
 
         // Password
         gbc.gridx = 0;
         gbc.gridy = 1;
-        JLabel passLabel = new JLabel("Password:");
-        UIUtils.styleLabel(passLabel, 14, false);
-        add(passLabel, gbc);
+        add(new JLabel("Password:"), gbc);
 
         passField = new JPasswordField(15);
-        UIUtils.styleTextField(passField);
         gbc.gridx = 1;
         add(passField, gbc);
 
         // Confirm Password
         gbc.gridx = 0;
         gbc.gridy = 2;
-        JLabel confirmLabel = new JLabel("Confirm Password:");
-        UIUtils.styleLabel(confirmLabel, 14, false);
-        add(confirmLabel, gbc);
+        add(new JLabel("Confirm Password:"), gbc);
 
         confirmPassField = new JPasswordField(15);
-        UIUtils.styleTextField(confirmPassField);
         gbc.gridx = 1;
         add(confirmPassField, gbc);
 
         // Buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
         JButton registerButton = new JButton("Register");
-        UIUtils.styleButton(registerButton, new Color(30, 144, 255)); // Dodger Blue
-
         JButton cancelButton = new JButton("Cancel");
-        UIUtils.styleButton(cancelButton, Color.GRAY);
 
         buttonPanel.add(registerButton);
         buttonPanel.add(cancelButton);

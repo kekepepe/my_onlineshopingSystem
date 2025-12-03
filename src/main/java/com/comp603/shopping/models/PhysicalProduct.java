@@ -4,8 +4,8 @@ public class PhysicalProduct extends Product {
     private double weight;
 
     public PhysicalProduct(int productId, String name, String description, double price, int stockQuantity,
-            double weight) {
-        super(productId, name, description, price, stockQuantity);
+            double weight, String imagePath) {
+        super(productId, name, description, price, stockQuantity, imagePath);
         this.weight = weight;
     }
 

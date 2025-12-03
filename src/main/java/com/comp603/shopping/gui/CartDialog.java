@@ -19,7 +19,6 @@ public class CartDialog extends JDialog {
         setSize(500, 400);
         setLocationRelativeTo(mainFrame);
         setLayout(new BorderLayout());
-        getContentPane().setBackground(UIUtils.COLOR_BACKGROUND);
 
         // Cart Table
         String[] columnNames = { "Name", "Price", "Type" };
@@ -30,29 +29,13 @@ public class CartDialog extends JDialog {
             }
         };
         JTable cartTable = new JTable(tableModel);
-        cartTable.setBackground(UIUtils.COLOR_CARD_BG);
-        cartTable.setForeground(UIUtils.COLOR_TEXT);
-        cartTable.setGridColor(Color.DARK_GRAY);
-        cartTable.setSelectionBackground(UIUtils.COLOR_ACCENT);
-        cartTable.setSelectionForeground(Color.BLACK);
-
-        JScrollPane scrollPane = new JScrollPane(cartTable);
-        scrollPane.getViewport().setBackground(UIUtils.COLOR_BACKGROUND);
-        scrollPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        add(scrollPane, BorderLayout.CENTER);
+        add(new JScrollPane(cartTable), BorderLayout.CENTER);
 
         // Bottom Panel
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        bottomPanel.setBackground(UIUtils.COLOR_BACKGROUND);
-
         totalLabel = new JLabel("Total: $0.00");
-        UIUtils.styleLabel(totalLabel, 16, true);
-
         JButton closeButton = new JButton("Close");
-        UIUtils.styleButton(closeButton, Color.GRAY);
-
         JButton checkoutButton = new JButton("Checkout");
-        UIUtils.styleButton(checkoutButton, new Color(60, 179, 113)); // MediumSeaGreen
 
         bottomPanel.add(totalLabel);
         bottomPanel.add(closeButton);

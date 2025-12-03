@@ -17,11 +17,11 @@ public class ProductListPanel extends JPanel {
         this.productDAO = new ProductDAO();
 
         setLayout(new BorderLayout());
-        setBackground(UIUtils.COLOR_BACKGROUND);
+        setBackground(Color.WHITE);
 
         // Product Container (Grid Layout)
         productContainer = new JPanel(new GridLayout(0, 3, 20, 20)); // 3 columns, gaps
-        productContainer.setBackground(UIUtils.COLOR_BACKGROUND);
+        productContainer.setBackground(Color.WHITE);
         productContainer.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         loadProducts();
@@ -30,7 +30,6 @@ public class ProductListPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(productContainer);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.getViewport().setBackground(UIUtils.COLOR_BACKGROUND);
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -44,15 +43,7 @@ public class ProductListPanel extends JPanel {
             productContainer.add(notFoundLabel);
         } else {
             for (Product p : products) {
-                ProductCard card = new ProductCard(p, e -> {
-                    if (p.getStockQuantity() > 0) {
-                        mainFrame.getCart().addProduct(p);
-                        JOptionPane.showMessageDialog(mainFrame, "Added to cart: " + p.getName());
-                        mainFrame.updateCartCount();
-                    } else {
-                        JOptionPane.showMessageDialog(mainFrame, "Out of stock!", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+                ProductCard card = new ProductCard(p, mainFrame);
                 productContainer.add(card);
             }
         }

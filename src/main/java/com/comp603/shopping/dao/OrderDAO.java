@@ -83,4 +83,99 @@ public class OrderDAO {
             }
         }
     }
+
+    public java.util.List<Order> getAllOrders() {
+        java.util.List<Order> orders = new java.util.ArrayList<>();
+        String sql = "SELECT o.ORDER_ID, o.TOTAL_AMOUNT, o.STATUS, o.ORDER_DATE, u.USERNAME " +
+                "FROM ORDERS o JOIN USERS u ON o.USER_ID = u.USER_ID";
+
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getInt("ORDER_ID"));
+                order.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
+                order.setStatus(rs.getString("STATUS"));
+                order.setOrderDate(rs.getTimestamp("ORDER_DATE"));
+                order.setCustomerName(rs.getString("USERNAME"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public boolean updateOrderStatus(int orderId, String status) {
+        String sql = "UPDATE ORDERS SET STATUS = ? WHERE ORDER_ID = ?";
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, status);
+            pstmt.setInt(2, orderId);
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public java.util.List<Order> getOrdersByUserId(int userId) {
+        java.util.List<Order> orders = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM ORDERS WHERE USER_ID = ?";
+
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getInt("ORDER_ID"));
+                order.setUserId(rs.getInt("USER_ID"));
+                order.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
+                order.setStatus(rs.getString("STATUS"));
+                order.setOrderDate(rs.getTimestamp("ORDER_DATE"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public boolean cancelOrder(int orderId) {
+        // Can only cancel if status is PENDING or PAID
+        String checkSql = "SELECT STATUS FROM ORDERS WHERE ORDER_ID = ?";
+        String updateSql = "UPDATE ORDERS SET STATUS = 'CANCELLED' WHERE ORDER_ID = ?";
+
+        try (Connection conn = DBManager.getConnection()) {
+            // Check status
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setInt(1, orderId);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    String status = rs.getString("STATUS");
+                    if ("SHIPPED".equalsIgnoreCase(status) || "CANCELLED".equalsIgnoreCase(status)) {
+                        return false; // Cannot cancel
+                    }
+                } else {
+                    return false; // Order not found
+                }
+            }
+
+            // Update status
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                updateStmt.setInt(1, orderId);
+                return updateStmt.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -4,8 +4,8 @@ public class DigitalProduct extends Product {
     private String downloadLink;
 
     public DigitalProduct(int productId, String name, String description, double price, int stockQuantity,
-            String downloadLink) {
-        super(productId, name, description, price, stockQuantity);
+            String downloadLink, String imagePath) {
+        super(productId, name, description, price, stockQuantity, imagePath);
         this.downloadLink = downloadLink;
     }
 

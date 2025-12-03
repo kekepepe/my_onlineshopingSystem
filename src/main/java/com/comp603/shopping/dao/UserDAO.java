@@ -23,6 +23,7 @@ public class UserDAO {
                         rs.getString("USERNAME"),
                         rs.getString("PASSWORD"),
                         rs.getString("EMAIL"),
+                        rs.getString("ROLE"),
                         rs.getDouble("BALANCE"));
             }
         } catch (SQLException e) {
@@ -32,14 +33,15 @@ public class UserDAO {
     }
 
     public boolean createUser(User user) {
-        String sql = "INSERT INTO USERS (USERNAME, PASSWORD, EMAIL, BALANCE) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO USERS (USERNAME, PASSWORD, EMAIL, ROLE, BALANCE) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBManager.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getEmail());
-            pstmt.setDouble(4, user.getBalance());
+            pstmt.setString(4, user.getRole() != null ? user.getRole() : "CUSTOMER");
+            pstmt.setDouble(5, user.getBalance());
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
@@ -76,6 +78,33 @@ public class UserDAO {
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE USERS SET USERNAME = ?, EMAIL = ? WHERE USER_ID = ?";
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setInt(3, user.getUserId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE USERS SET PASSWORD = ? WHERE USER_ID = ?";
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

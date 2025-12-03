@@ -25,7 +25,7 @@ public class AuthService {
         if (userDAO.getUserByUsername(username) != null) {
             return false; // Username already exists
         }
-        User newUser = new User(0, username, password, email, 0.0);
+        User newUser = new User(0, username, password, email, "CUSTOMER", 0.0);
         return userDAO.createUser(newUser);
     }
 

@@ -17,8 +17,8 @@ public class ShoppingCartTest {
     @BeforeEach
     public void setUp() {
         cart = new ShoppingCart();
-        p1 = new PhysicalProduct(1, "Book", "A book", 10.0, 5, 1.0);
-        p2 = new DigitalProduct(2, "E-Book", "An ebook", 20.0, 100, "link");
+        p1 = new PhysicalProduct(1, "Book", "A book", 10.0, 5, 1.0, null);
+        p2 = new DigitalProduct(2, "E-Book", "An ebook", 20.0, 100, "link", null);
     }
 
     @Test

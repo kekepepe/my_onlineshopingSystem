@@ -11,6 +11,8 @@ public class Order {
     private Date orderDate;
     private List<OrderItem> items;
 
+    private String customerName;
+
     public Order() {
     }
 
@@ -36,6 +38,14 @@ public class Order {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public double getTotalAmount() {

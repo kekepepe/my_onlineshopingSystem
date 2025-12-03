@@ -32,7 +32,8 @@ public class ProductDAO {
                             rs.getString("DESCRIPTION"),
                             rs.getDouble("PRICE"),
                             rs.getInt("STOCK_QUANTITY"),
-                            rs.getDouble("WEIGHT"));
+                            rs.getDouble("WEIGHT"),
+                            rs.getString("IMAGE_PATH"));
                 } else {
                     product = new DigitalProduct(
                             rs.getInt("PRODUCT_ID"),
@@ -40,7 +41,8 @@ public class ProductDAO {
                             rs.getString("DESCRIPTION"),
                             rs.getDouble("PRICE"),
                             rs.getInt("STOCK_QUANTITY"),
-                            rs.getString("DOWNLOAD_LINK"));
+                            rs.getString("DOWNLOAD_LINK"),
+                            rs.getString("IMAGE_PATH"));
                 }
                 products.add(product);
             }
@@ -87,7 +89,8 @@ public class ProductDAO {
                             rs.getString("DESCRIPTION"),
                             rs.getDouble("PRICE"),
                             rs.getInt("STOCK_QUANTITY"),
-                            rs.getDouble("WEIGHT"));
+                            rs.getDouble("WEIGHT"),
+                            rs.getString("IMAGE_PATH"));
                 } else {
                     product = new DigitalProduct(
                             rs.getInt("PRODUCT_ID"),
@@ -95,7 +98,8 @@ public class ProductDAO {
                             rs.getString("DESCRIPTION"),
                             rs.getDouble("PRICE"),
                             rs.getInt("STOCK_QUANTITY"),
-                            rs.getString("DOWNLOAD_LINK"));
+                            rs.getString("DOWNLOAD_LINK"),
+                            rs.getString("IMAGE_PATH"));
                 }
                 products.add(product);
             }
@@ -103,5 +107,60 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return products;
+    }
+
+    public boolean addProduct(Product product) {
+        String sql = "INSERT INTO PRODUCTS (NAME, DESCRIPTION, PRICE, STOCK_QUANTITY, TYPE, WEIGHT, DOWNLOAD_LINK, IMAGE_PATH) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, product.getName());
+            pstmt.setString(2, product.getDescription());
+            pstmt.setDouble(3, product.getPrice());
+            pstmt.setInt(4, product.getStockQuantity());
+
+            if (product instanceof PhysicalProduct) {
+                pstmt.setString(5, "PHYSICAL");
+                pstmt.setDouble(6, ((PhysicalProduct) product).getWeight());
+                pstmt.setString(7, null);
+            } else {
+                pstmt.setString(5, "DIGITAL");
+                pstmt.setObject(6, null);
+                pstmt.setString(7, ((DigitalProduct) product).getDownloadLink());
+            }
+            pstmt.setString(8, product.getImagePath());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateProduct(Product product) {
+        String sql = "UPDATE PRODUCTS SET NAME = ?, DESCRIPTION = ?, PRICE = ?, STOCK_QUANTITY = ?, WEIGHT = ?, DOWNLOAD_LINK = ?, IMAGE_PATH = ? WHERE PRODUCT_ID = ?";
+        try (Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, product.getName());
+            pstmt.setString(2, product.getDescription());
+            pstmt.setDouble(3, product.getPrice());
+            pstmt.setInt(4, product.getStockQuantity());
+
+            if (product instanceof PhysicalProduct) {
+                pstmt.setDouble(5, ((PhysicalProduct) product).getWeight());
+                pstmt.setString(6, null);
+            } else {
+                pstmt.setObject(5, null);
+                pstmt.setString(6, ((DigitalProduct) product).getDownloadLink());
+            }
+            pstmt.setString(7, product.getImagePath());
+            pstmt.setInt(8, product.getProductId());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

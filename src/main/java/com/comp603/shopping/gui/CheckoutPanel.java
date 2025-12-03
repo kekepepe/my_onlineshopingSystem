@@ -11,6 +11,7 @@ import com.comp603.shopping.services.WalletStrategy;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CheckoutPanel extends JPanel {
@@ -19,7 +20,6 @@ public class CheckoutPanel extends JPanel {
     private JComboBox<String> paymentMethodCombo;
     private JPanel cardPanel;
     private JPanel walletPanel;
-    private JPanel dynamicArea;
 
     // Card Fields
     private JTextField cardNumberField;
@@ -32,19 +32,15 @@ public class CheckoutPanel extends JPanel {
     public CheckoutPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
-        setBackground(UIUtils.COLOR_BACKGROUND);
 
         // Header
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        headerPanel.setOpaque(false);
         JButton backButton = new JButton("Back to Cart");
-        UIUtils.styleButton(backButton, Color.GRAY);
         headerPanel.add(backButton);
         add(headerPanel, BorderLayout.NORTH);
 
         // Center Content
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(UIUtils.COLOR_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -52,7 +48,7 @@ public class CheckoutPanel extends JPanel {
         // Total Amount
         double total = mainFrame.getCart().getTotal();
         JLabel totalLabel = new JLabel(String.format("Total Amount: $%.2f", total));
-        UIUtils.styleLabel(totalLabel, 18, true);
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -61,9 +57,7 @@ public class CheckoutPanel extends JPanel {
         // Payment Method Selection
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        JLabel methodLabel = new JLabel("Select Payment Method:");
-        UIUtils.styleLabel(methodLabel, 14, false);
-        centerPanel.add(methodLabel, gbc);
+        centerPanel.add(new JLabel("Select Payment Method:"), gbc);
 
         String[] methods = { "Credit Card", "Wallet" };
         paymentMethodCombo = new JComboBox<>(methods);
@@ -72,48 +66,26 @@ public class CheckoutPanel extends JPanel {
 
         // Card Details Panel
         cardPanel = new JPanel(new GridLayout(3, 2, 5, 5));
-        cardPanel.setBackground(UIUtils.COLOR_CARD_BG);
-        cardPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(UIUtils.COLOR_ACCENT),
-                "Card Details", 0, 0, new Font("Monospaced", Font.BOLD, 12), UIUtils.COLOR_ACCENT));
-
-        JLabel cardNumLabel = new JLabel("Card Number:");
-        UIUtils.styleLabel(cardNumLabel, 12, false);
-        cardPanel.add(cardNumLabel);
-
+        cardPanel.setBorder(BorderFactory.createTitledBorder("Card Details"));
+        cardPanel.add(new JLabel("Card Number:"));
         cardNumberField = new JTextField();
-        UIUtils.styleTextField(cardNumberField);
         cardPanel.add(cardNumberField);
-
-        JLabel cvvLabel = new JLabel("CVV:");
-        UIUtils.styleLabel(cvvLabel, 12, false);
-        cardPanel.add(cvvLabel);
-
+        cardPanel.add(new JLabel("CVV:"));
         cvvField = new JTextField();
-        UIUtils.styleTextField(cvvField);
         cardPanel.add(cvvField);
-
-        JLabel expiryLabel = new JLabel("Expiry (MM/YY):");
-        UIUtils.styleLabel(expiryLabel, 12, false);
-        cardPanel.add(expiryLabel);
-
+        cardPanel.add(new JLabel("Expiry (MM/YY):"));
         expiryField = new JTextField();
-        UIUtils.styleTextField(expiryField);
         cardPanel.add(expiryField);
 
         // Wallet Details Panel
         walletPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        walletPanel.setBackground(UIUtils.COLOR_CARD_BG);
-        walletPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(UIUtils.COLOR_ACCENT),
-                "Wallet Details", 0, 0, new Font("Monospaced", Font.BOLD, 12), UIUtils.COLOR_ACCENT));
-
+        walletPanel.setBorder(BorderFactory.createTitledBorder("Wallet Details"));
         double balance = mainFrame.getAuthService().getCurrentUser().getBalance();
         balanceLabel = new JLabel(String.format("Current Balance: $%.2f", balance));
-        UIUtils.styleLabel(balanceLabel, 14, true);
         walletPanel.add(balanceLabel);
 
         // Add Dynamic Panel Area
-        dynamicArea = new JPanel(new CardLayout());
-        dynamicArea.setOpaque(false);
+        JPanel dynamicArea = new JPanel(new CardLayout());
         dynamicArea.add(cardPanel, "Credit Card");
         dynamicArea.add(walletPanel, "Wallet");
 
@@ -126,9 +98,7 @@ public class CheckoutPanel extends JPanel {
 
         // Bottom Panel
         JPanel bottomPanel = new JPanel();
-        bottomPanel.setOpaque(false);
         JButton payButton = new JButton("Confirm Payment");
-        UIUtils.styleButton(payButton, new Color(60, 179, 113)); // MediumSeaGreen
         bottomPanel.add(payButton);
         add(bottomPanel, BorderLayout.SOUTH);
 

@@ -10,13 +10,19 @@ public abstract class Product {
     protected String description;
     protected double price;
     protected int stockQuantity;
+    protected String imagePath; // Added imagePath field
 
-    public Product(int productId, String name, String description, double price, int stockQuantity) {
+    // Added no-argument constructor
+    public Product() {
+    }
+
+    public Product(int productId, String name, String description, double price, int stockQuantity, String imagePath) {
         this.productId = productId;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stockQuantity = stockQuantity;
+        this.imagePath = imagePath; // Initialize imagePath
     }
 
     // Abstract method to be implemented by subclasses (Polymorphism)
@@ -60,5 +66,15 @@ public abstract class Product {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    // Added getter for imagePath
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    // Added setter for imagePath
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

@@ -11,6 +11,8 @@ public class User {
     private String email;
     private double balance;
 
+    private String role;
+
     /**
      * Default constructor.
      */
@@ -24,13 +26,15 @@ public class User {
      * @param username User's login name
      * @param password User's password
      * @param email    User's email address
+     * @param role     User's role (ADMIN or CUSTOMER)
      * @param balance  Current wallet balance
      */
-    public User(int userId, String username, String password, String email, double balance) {
+    public User(int userId, String username, String password, String email, String role, double balance) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
         this.balance = balance;
     }
 
@@ -64,6 +68,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public double getBalance() {
